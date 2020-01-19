@@ -1,6 +1,57 @@
+#:import datetime datetime
+
 <Manager>:
     Screen:
-        name: 'home'
+        name: 'Home'
         BoxLayout:
             orientation: 'vertical'
             size_hint: 1, 1
+            Button:
+                text: 'Archive'
+                on_release: root.current = 'Archive'
+            Button:
+                text: 'New Entry'
+                on_release: root.current = 'New Entry'
+    Screen:
+        name: 'New Entry'
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'New Entry'
+                size_hint: 1, .25
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, .25
+                Label:
+                Label:
+                    text: str(datetime.date.today())
+                    size_hint: .5, 1
+            TextInput:
+                id: 'Title'
+                multiline: False
+                text:'Subject'
+                size_hint: 1, .25
+                background_color: 0.8, 0.8, 0.8, 0.8
+                foreground_color: 1, 1, 1, 1
+            TextInput:
+                id: 'Body'
+                multiline: True
+                text: 'Summary'
+                background_color: 0.8, 0.8, 0.8, 0.5
+                foreground_color: 1, 1, 1, 1
+            BoxLayout:
+                size_hint: 1, .25
+                orientation: 'horizontal'
+                Button:
+                    text: 'Abort'
+                    on_release: root.current = 'Home'
+                    background_color: 0.0, 0.0, 0.0, 0.0
+                    foreground_color: 1, 1, 1, 1
+                Button:
+                    text: 'Save'
+                    background_color: 0.0, 0.0, 0.0, 0.0
+                    foreground_color: 1, 1, 1, 1
+    Screen:
+        name: 'Archive'
+        BoxLayout:
+            orientation: 'vertical'
