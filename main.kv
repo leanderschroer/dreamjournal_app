@@ -1,57 +1,59 @@
 #:import datetime datetime
 
-<Manager>:
-    Screen:
-        name: 'Home'
+<Archive>:
+    orientation: 'vertical'
+
+<HomeButton>:
+    smo: smo
+    text: 'Home'
+    on_release: smo.current = 'Home'
+
+<HomeScreen>:
+    on_pre_enter: self.ids.Archive.build_from(app.archive)
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, 1
+        Label:
+            text: 'Dream Journal'
+            size_hint: 1, .2
+        Label:
+            size_hint: 1, .02
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            Archive:
+                id: Archive
+                display: app.archive
+                sm: root.manager
+                size_hint_y: None
+                height: self.minimum_height
+        Label:
+            size_hint: 1, .02
+        Button:
+            text: '+'
+            on_release: root.manager.change_screen('New') if app.date not in app.archive.keys() else root.manager.change_screen(app.date)
+            size_hint: 1, .2
+
+<EditScreen>:
+    BoxLayout:
+        orientation: 'vertical'
         BoxLayout:
-            orientation: 'vertical'
-            size_hint: 1, 1
-            Button:
-                text: 'Archive'
-                on_release: root.current = 'Archive'
-            Button:
-                text: 'New Entry'
-                on_release: root.current = 'New Entry'
-    Screen:
-        name: 'New Entry'
-        BoxLayout:
-            orientation: 'vertical'
+            orientation: 'horizontal'
+            size_hint: 1, .2
             Label:
-                text: 'New Entry'
-                size_hint: 1, .25
-            BoxLayout:
-                orientation: 'horizontal'
-                size_hint: 1, .25
-                Label:
-                Label:
-                    text: str(datetime.date.today())
-                    size_hint: .5, 1
-            TextInput:
-                id: 'Title'
-                multiline: False
-                text:'Subject'
-                size_hint: 1, .25
-                background_color: 0.8, 0.8, 0.8, 0.8
-                foreground_color: 1, 1, 1, 1
-            TextInput:
-                id: 'Body'
-                multiline: True
-                text: 'Summary'
-                background_color: 0.8, 0.8, 0.8, 0.5
-                foreground_color: 1, 1, 1, 1
-            BoxLayout:
-                size_hint: 1, .25
-                orientation: 'horizontal'
-                Button:
-                    text: 'Abort'
-                    on_release: root.current = 'Home'
-                    background_color: 0.0, 0.0, 0.0, 0.0
-                    foreground_color: 1, 1, 1, 1
-                Button:
-                    text: 'Save'
-                    background_color: 0.0, 0.0, 0.0, 0.0
-                    foreground_color: 1, 1, 1, 1
-    Screen:
-        name: 'Archive'
+                text: root.date
+                size_hint: .5, 1
+        TextInput:
+            multiline: True
+            text: '<Type Here>' if root.body=='' else root.body
+        Label:
+            size_hint: 1, .02
         BoxLayout:
-            orientation: 'vertical'
+            size_hint: 1, .2
+            orientation: 'horizontal'
+            Button:
+                text: 'Abort'
+                on_release: root.manager.current = 'Home'
+            Button:
+                text: 'Save'
+                on_press: app.save_entry(root.date, root.body); root.manager.current = 'Home'
