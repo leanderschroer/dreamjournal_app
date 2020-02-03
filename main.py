@@ -1,3 +1,4 @@
+import json
 from math import ceil
 
 import kivy
@@ -5,9 +6,11 @@ import datetime
 from kivy.app import App
 from kivy.properties import DictProperty, ObjectProperty, StringProperty
 from kivy.uix import button
+from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 
@@ -22,7 +25,6 @@ Config.set('graphics', 'height', '600')
 class Manager(ScreenManager):
     def change_screen(self, name: str):
         self.current = name
-
     pass
 
 
@@ -52,8 +54,7 @@ class Archive(BoxLayout):
                 )
 
 
-class HomeButton(Button):
-    sm = ObjectProperty()
+class ImageButton(ButtonBehavior, Image):
     pass
 
 
@@ -62,15 +63,19 @@ class MainApp(App):
         super().__init__(**kwargs)
         self.archive = DictProperty()
         self.manager = ObjectProperty()
+        self.archive = {}
         # dummy archive
-        self.archive = {'test key': 'test text'}
-        abc = [i for i in 'abcdefghifjklmnop']
-        for i, a in enumerate(abc):
-            self.archive[str(i)] = str(a)
+        # abc = [i for i in 'abcdefghifjklmnop']
+        # for i, a in enumerate(abc):
+        #     self.archive[str(i)] = str(a)
         self.date = StringProperty()
         self.date = str(datetime.date.today())
 
     def build(self):
+        try:
+            self.load_json()
+        except:
+            print('[APP-INFO] No Archive found.')
         sm = Manager()
         self.manager = sm
         sm.add_widget(HomeScreen(name='Home'))
@@ -87,13 +92,24 @@ class MainApp(App):
     def save_entry(self, date: str, text: str):
         assert isinstance(text, str)
         assert isinstance(date, str)
+        print(date+' '+text)
         self.archive[date] = text
-        self.manager.add_widget(
-            EditScreen(name=str(date),
-                       date=date,
-                       body=text
-                       )
-        )
+        if date not in self.manager.screen_names:
+            self.manager.add_widget(
+                EditScreen(name=str(date),
+                           date=date,
+                           body=text
+                           )
+            )
+        self.save_json()
+
+    def save_json(self):
+        with open('journal_data.txt', 'w') as outfile:
+            json.dump(self.archive, outfile)
+
+    def load_json(self):
+        with open('journal_data.txt', 'r') as json_file:
+            self.archive = json.load(json_file)
 
 
 if __name__ == '__main__':
@@ -103,5 +119,6 @@ if __name__ == '__main__':
 # DONE reformat everything to be screens added to the sm
 # DONE make everything work again
 # DONE create Archive widget with Object Property, add Archive to Home Screen
-# TODO make Add Button bubbly
+# DONE make Add Button bubbly
+# TODO save archive locally
 # TODO hook up archive to cloud

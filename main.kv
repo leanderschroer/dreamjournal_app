@@ -3,36 +3,39 @@
 <Archive>:
     orientation: 'vertical'
 
-<HomeButton>:
-    smo: smo
-    text: 'Home'
-    on_release: smo.current = 'Home'
+<ImageButton>:
+
 
 <HomeScreen>:
     on_pre_enter: self.ids.Archive.build_from(app.archive)
-    BoxLayout:
-        orientation: 'vertical'
-        size_hint: 1, 1
-        Label:
-            text: 'Dream Journal'
-            size_hint: 1, .2
-        Label:
-            size_hint: 1, .02
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-            Archive:
-                id: Archive
-                display: app.archive
-                sm: root.manager
-                size_hint_y: None
-                height: self.minimum_height
-        Label:
-            size_hint: 1, .02
-        Button:
-            text: '+'
+    FloatLayout:
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 1
+            Label:
+                text: 'Dream Journal'
+                size_hint: 1, .2
+            Label:
+                size_hint: 1, .02
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                Archive:
+                    id: Archive
+                    display: app.archive
+                    sm: root.manager
+                    size_hint_y: None
+                    height: self.minimum_height
+            #Label:
+            #    size_hint: 1, .02
+        ImageButton:
             on_release: root.manager.change_screen('New') if app.date not in app.archive.keys() else root.manager.change_screen(app.date)
-            size_hint: 1, .2
+            size_hint: .2, .2
+            source: "./graphics/plus_bright.png"
+            allow_stretch: True
+            pos: (root.width/2-self.width/2, 0)
+            keep_ratio: True
+
 
 <EditScreen>:
     BoxLayout:
@@ -44,6 +47,7 @@
                 text: root.date
                 size_hint: .5, 1
         TextInput:
+            id: text_input
             multiline: True
             text: '<Type Here>' if root.body=='' else root.body
         Label:
@@ -56,4 +60,4 @@
                 on_release: root.manager.current = 'Home'
             Button:
                 text: 'Save'
-                on_press: app.save_entry(root.date, root.body); root.manager.current = 'Home'
+                on_press: app.save_entry(root.date, text_input.text); root.manager.current = 'Home'
