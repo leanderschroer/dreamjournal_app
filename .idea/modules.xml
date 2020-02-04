@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/dream_journal.iml" filepath="$PROJECT_DIR$/.idea/dream_journal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../dreamjournal_app/.idea/dreamjournal_app.iml" filepath="$PROJECT_DIR$/../dreamjournal_app/.idea/dreamjournal_app.iml" />
     </modules>
   </component>
 </project>
